@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Pet Paradise</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <header>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="products.html">Our Products</a></li>
+                <li><a href="sign-in.html">Sign In</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="register-section">
+        <h1>Register</h1>
+        <form id="registerForm" class="register-form">
+            <label for="name">Full Name:</label>
+            <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+
+            <label for="email">Email Address:</label>
+            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" placeholder="Enter your password" required>
+
+            <label for="user_type">User Type:</label>
+            <select id="user_type" name="user_type" required>
+                <option value="customer">Shopper</option>
+                <option value="admin">Admin</option>
+            </select>
+
+            <button type="submit" class="btn">Register</button>
+        </form>
+
+        <p class="sign-in-cta">
+            Already have an account? <a href="sign-in.html">Sign in here</a>.
+        </p>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 Pet Paradise | All Rights Reserved</p>
+    </footer>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const user_type = document.getElementById('user_type').value;
+
+            try {
+                const response = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password, user_type }),
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    alert(data.message);
+                    window.location.href = 'sign-in.html'; 
+                } else {
+                    alert(data.error || 'Registration failed.');
+                }
+            } catch (error) {
+                console.error(error);
+                alert('An error occurred during registration.');
+            }
+        });
+    </script>
+</body>
+
+</html>

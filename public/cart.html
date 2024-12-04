@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart - Pet Paradise</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <header>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="products.html">Our Products</a></li>
+                <li><a href="cart.html">Cart</a></li>
+                <li><a href="sign-in.html">Sign In</a></li>
+            </ul>
+            <a href="index.html" class="logo">
+                <img src="images/Pet paradise.png" alt="Pet Paradise Logo">
+            </a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="cart">
+            <h1>Your Cart</h1>
+            <div id="cartItems">
+                <!-- Cart items will be loaded here -->
+            </div>
+            <div id="cartSummary">
+                <!-- Cart summary will be loaded here -->
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Pet Paradise | All Rights Reserved</p>
+        <p><a href="contact.html">Contact Us</a></p>
+    </footer>
+
+    <script>
+        function loadCart() {
+            const cartItemsDiv = document.getElementById('cartItems');
+            const cartSummaryDiv = document.getElementById('cartSummary');
+
+            
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+            if (cart.length === 0) {
+                cartItemsDiv.innerHTML = '<p>Your cart is empty.</p>';
+                cartSummaryDiv.innerHTML = '';
+                return;
+            }
+
+            let total = 0;
+            cartItemsDiv.innerHTML = cart.map(item => {
+                total += item.price * item.quantity;
+                return `
+                    <div class="cart-item">
+                        <p><strong>${item.name}</strong></p>
+                        <p>Price: $${item.price.toFixed(2)}</p>
+                        <p>Quantity: 
+                            <button onclick="updateQuantity(${item.id}, -1)">-</button>
+                            ${item.quantity}
+                            <button onclick="updateQuantity(${item.id}, 1)">+</button>
+                        </p>
+                        <button onclick="removeFromCart(${item.id})">Remove</button>
+                    </div>
+                `;
+            }).join('');
+
+            cartSummaryDiv.innerHTML = `
+                <h2>Summary</h2>
+                <p>Total: $${total.toFixed(2)}</p>
+                <button class="btn" onclick="checkout()">Checkout</button>
+            `;
+        }
+
+        function updateQuantity(productId, change) {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const product = cart.find(item => item.id === productId);
+
+            if (product) {
+                product.quantity += change;
+                if (product.quantity <= 0) {
+                    cart = cart.filter(item => item.id !== productId);
+                }
+            }
+
+            localStorage.setItem('cart', JSON.stringify(cart));
+            loadCart();
+        }
+
+        function removeFromCart(productId) {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            cart = cart.filter(item => item.id !== productId);
+
+            localStorage.setItem('cart', JSON.stringify(cart));
+            loadCart();
+        }
+
+        function checkout() {
+            alert('Thank you for your purchase!');
+            localStorage.removeItem('cart'); 
+            loadCart(); 
+        }
+
+       
+        document.addEventListener('DOMContentLoaded', loadCart);
+    </script>
+</body>
+
+</html>

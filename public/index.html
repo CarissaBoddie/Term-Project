@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pet Paradise - Your One-Stop Shop for All Things Pets</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <header>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="products.html">Our Products</a></li>
+                <li><a href="cart.html">Cart</a></li>
+                <li><a href="testimonials.html">Testimonials</a></li>
+                <li><a href="contact.html">Contact Us</a></li>
+                <li><a href="sign-in.html">Sign In</a></li>
+            </ul>
+            <a href="index.html" class="logo">
+                <img src="images/Pet paradise.png" alt="Pet Paradise Logo">
+            </a>
+        </nav>
+    </header>
+
+    <!-- Splash Section -->
+    <section class="splash">
+        <h1>Welcome to Pet Paradise</h1>
+        <p>Your one-stop shop for eco-friendly, personalized, and high-quality pet products.</p>
+        <div class="cta">
+            <a href="products.html" class="btn">Shop All Products</a>
+        </div>
+    </section>
+
+    <!-- Featured Section: Customizable Dog Bowls -->
+    <section class="featured-section">
+        <h2>Customizable Dog Bowls</h2>
+        <div class="featured-product-grid">
+            <div class="featured-product">
+                <img src="images/Featured Prodcut 2.avif" alt="Custom Dog Bowl 1">
+                <p>Personalize your dog's bowl with their name!</p>
+            </div>
+            <div class="featured-product">
+                <img src="images/Featured Product 3.avif" alt="Custom Dog Bowl 2">
+                <p>Choose from multiple colors and sizes.</p>
+            </div>
+            <div class="featured-product">
+                <img src="images/Featured Product 4.avif" alt="Custom Dog Bowl 3">
+                <p>Durable and pet-safe materials.</p>
+            </div>
+        </div>
+        <div class="call-to-action">
+            <a href="products.html" class="btn">Shop Custom Bowls Here</a>
+        </div>
+    </section>
+
+    <!-- Call-to-Action for Testimonials -->
+    <section class="testimonials-cta">
+        <h2>What Our Customers Are Saying</h2>
+        <p>See why our customers love us!</p>
+        <a href="testimonials.html" class="btn">Read Testimonials</a>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Pet Paradise | All Rights Reserved</p>
+        <p><a href="contact.html">Contact Us</a></p>
+    </footer>
+
+    
+    <script>
+        document.getElementById('searchButton').addEventListener('click', function () {
+            const searchTerm = document.getElementById('searchInput').value.trim();
+            if (searchTerm) {
+                
+                window.location.href = `products.html?search=${encodeURIComponent(searchTerm)}`;
+            }
+        });
+    </script>
+</body>
+
+</html>

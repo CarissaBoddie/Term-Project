@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Products - Pet Paradise</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <header>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="products.html">Our Products</a></li>
+                <li><a href="cart.html">Cart</a></li>
+                <li><a href="sign-in.html">Sign In</a></li>
+            </ul>
+            <a href="index.html" class="logo">
+                <img src="images/Pet paradise.png" alt="Pet Paradise Logo">
+            </a>
+        </nav>
+    </header>
+
+    <div class="search">
+        <input type="text" id="searchInput" placeholder="Search for products..." onkeyup="searchProducts()">
+        <button type="button" onclick="searchProducts()">Go</button>
+    </div>
+
+    <!-- No Results Message -->
+    <p id="noResults" style="display: none; text-align: center; font-weight: bold; color: red;">
+        No products found.
+    </p>
+
+    <!-- Product Listing Section -->
+    <section class="product-list">
+        <h2>All Products</h2>
+        <div class="product-grid" id="productGrid">
+            
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Pet Paradise | All Rights Reserved</p>
+        <p><a href="contact.html">Contact Us</a></p>
+    </footer>
+
+    <!--  Fetch and Display Products -->
+    <script>
+        async function fetchProducts() {
+            try {
+                const response = await fetch('/api/products');
+                if (!response.ok) throw new Error('Failed to fetch products');
+
+                const products = await response.json();
+                console.log('Fetched Products:', products);
+
+                const productGrid = document.getElementById('productGrid');
+                if (products.length === 0) {
+                    console.log('No products found in the database.');
+                    document.getElementById('noResults').style.display = 'block';
+                    return;
+                }
+
+                products.forEach(product => {
+                    const productDiv = document.createElement('div');
+                    productDiv.classList.add('product');
+                    productDiv.setAttribute('data-name', product.name);
+
+                    // Dynamically creates product cards
+                    productDiv.innerHTML = `
+                        <img src="${product.image_url.startsWith('http') ? product.image_url : 'images/' + product.image_url}" alt="${product.name}">
+                        <p class="product-name">${product.name}</p>
+                        <p class="product-price">$${product.price.toFixed(2)}</p>
+                        <p class="product-description">${product.description}</p>
+                        <a href="product-details.html?id=${product.id}" class="btn">View Details</a>
+                        <button class="btn" onclick="addToCart(${product.id}, '${product.name}', ${product.price})">Add to Cart</button>
+                    `;
+
+                    productGrid.appendChild(productDiv);
+                });
+            } catch (err) {
+                console.error('Error fetching products:', err);
+            }
+        }
+
+        function searchProducts() {
+            const input = document.getElementById('searchInput').value.toLowerCase();
+            const products = document.querySelectorAll('.product');
+            const noResults = document.getElementById('noResults');
+
+            let anyVisible = false;
+
+            products.forEach(product => {
+                const productName = product.getAttribute('data-name').toLowerCase();
+                if (productName.includes(input)) {
+                    product.style.display = 'block';
+                    anyVisible = true;
+                } else {
+                    product.style.display = 'none';
+                }
+            });
+
+            noResults.style.display = anyVisible ? 'none' : 'block';
+        }
+
+        
+        document.addEventListener('DOMContentLoaded', fetchProducts);
+
+        function addToCart(productId, productName, productPrice) {
+    
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    // Check if the product is already in the cart
+    const existingProduct = cart.find(item => item.id === productId);
+    if (existingProduct) {
+        
+        existingProduct.quantity += 1;
+    } else {
+        // Add the product to the cart
+        cart.push({
+            id: productId,
+            name: productName,
+            price: productPrice,
+            quantity: 1
+        });
+    }
+
+    
+    localStorage.setItem('cart', JSON.stringify(cart));
+    alert(`${productName} has been added to your cart!`);
+}
+
+    </script>
+</body>
+
+</html>

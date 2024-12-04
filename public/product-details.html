@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details - Pet Paradise</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <header>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="products.html">Our Products</a></li>
+                <li><a href="cart.html">Cart</a></li>
+                <li><a href="sign-in.html">Sign In</a></li>
+            </ul>
+            <a href="index.html" class="logo">
+                <img src="images/Pet paradise.png" alt="Pet Paradise Logo">
+            </a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="product-details" id="productDetails">
+            <!-- Product details will be loaded here -->
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Pet Paradise | All Rights Reserved</p>
+        <p><a href="contact.html">Contact Us</a></p>
+    </footer>
+
+    <script>
+        async function fetchProductDetails() {
+            const params = new URLSearchParams(window.location.search); 
+            const productId = params.get('id'); 
+
+            if (!productId) {
+                document.getElementById('productDetails').innerHTML = '<p>Product not found.</p>';
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/products/${productId}`); // Fetch product details by ID
+                if (!response.ok) throw new Error('Failed to fetch product details');
+
+                const product = await response.json();
+                console.log('Product Details:', product);
+
+                const productDetails = document.getElementById('productDetails');
+                productDetails.innerHTML = `
+                    <h1>${product.name}</h1>
+                    <img src="${product.image_url.startsWith('http') ? product.image_url : 'images/' + product.image_url}" alt="${product.name}">
+                    <p><strong>Price:</strong> $${product.price.toFixed(2)}</p>
+                    <p><strong>Description:</strong> ${product.description}</p>
+                    <button class="btn" id="addToCartButton">Add to Cart</button>
+                `;
+
+               
+                document
+                    .getElementById('addToCartButton')
+                    .addEventListener('click', () =>
+                        addToCart(product.id, product.name, product.price)
+                    );
+            } catch (err) {
+                console.error('Error fetching product details:', err);
+                document.getElementById('productDetails').innerHTML = '<p>Failed to load product details. Please try again later.</p>';
+            }
+        }
+
+        // Add to Cart Function
+        function addToCart(productId, productName, productPrice) {
+            
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+            // Check if the product is already in the cart
+            const existingProduct = cart.find(item => item.id === productId);
+            if (existingProduct) {
+                // Increment the quantity if the product is already in the cart
+                existingProduct.quantity += 1;
+            } else {
+                // Add the product to the cart
+                cart.push({
+                    id: productId,
+                    name: productName,
+                    price: productPrice,
+                    quantity: 1
+                });
+            }
+
+         
+            localStorage.setItem('cart', JSON.stringify(cart));
+            alert(`${productName} has been added to your cart!`);
+        }
+
+        
+        document.addEventListener('DOMContentLoaded', fetchProductDetails);
+    </script>
+</body>
+
+</html>
